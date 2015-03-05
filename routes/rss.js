@@ -1,5 +1,7 @@
+var formidable = require('formidable')
 var express = require('express');
 var request = require('superagent');
+var fs = require('fs');
 var xml = require('xml2js');
 var q = require('q');
 var _ = require('lodash');
@@ -10,9 +12,13 @@ var cache = new NodeCache();
 var idRegex = /(?!\?id=)\d+/g;
 var torrentBaseUrl = 'http://kinozal.tv/download.php/{0}/[kinozal.tv]id{0}.torrent';
 
-
 /* GET users listing. */
 router.post('/test', function (req, res) {
+    console.log(req.headers);
+    console.log(req.body);
+    res.send('');
+});
+router.get('/test', function (req, res) {
     console.log(req.headers);
     console.log(req.body);
     res.send('');
@@ -26,20 +32,19 @@ router.get('/link/:cridentials/:movieId/file.torrent', function (req, res) {
     };
 
     var authenticationDetails = cache.get(req.params.cridentials);
-    console.log(authenticationDetails);
     if (!_.isEmpty(authenticationDetails)) {
-        retrieveTorrentFile(req.params.movieId).then(function (torrentFile) {
+        retrieveTorrentFile(req.params.movieId, authenticationDetails[req.params.cridentials]).then(function (response) {
             //send file
-            res.send(torrentFile);
+            res.set('Content-Disposition', 'attachment; filename="' + req.params.movieId + '.torrent"').send(data);
         });
         return;
     }
 
-    login(cridentials, req.params.movieId)
-        .then(retrieveTorrentFile)
-        .then(function (torrentFile) {
+    login(cridentials)
+        .then(retrieveTorrentFile.bind(null, req.params.movieId))
+        .then(function (data) {
             //send file
-            res.send(torrentFile);
+            res.set('Content-Disposition', 'attachment; filename="' + req.params.movieId + '.torrent"').send(data);
         });
 });
 
@@ -97,18 +102,31 @@ function buildLinks(cridentials, obj) {
     return links;
 }
 
-function retrieveTorrentFile(movieId) {
+function retrieveTorrentFile(movieId, authentication) {
     var deferred = q.defer();
-
     var torrentUrl = torrentBaseUrl.replace(/\{0\}/g, movieId);
-    //request.get(torrentUrl)
-    //    .set
-    deferred.resolve(torrentUrl);
+    console.log(torrentUrl);
+    request.get(torrentUrl)
+        .parse(function (rq, callback) {
+            var data = '';
+            rq.setEncoding('ascii');
+            rq.on('data', function (chunk) {
+                data += chunk;
+                console.log(chunk);
+            });
+            rq.on('end', function () {
+                console.log(data);
+                deferred.resolve(data);
+            });
+        })
+        .set('cookie', authentication.uid + ' ' + authentication.pass)
+        .end(function (err, res) {
+        });
 
     return deferred.promise;
 }
 
-function login(cridentials, movieId) {
+function login(cridentials) {
     var deferred = q.defer();
 
     request.post('http://kinozal.tv/takelogin.php')
@@ -120,14 +138,12 @@ function login(cridentials, movieId) {
                 deferred.reject(err);
                 return;
             }
-            console.log(res.headers);
             var authentication = {
                 uid: res.headers['set-cookie'][0].match(/uid=\d+;/g)[0],
                 pass: res.headers['set-cookie'][1].match(/pass=\w+;/g)[0]
             };
-            console.log(authentication);
             cache.set(cridentials.username + ':' + cridentials.password, authentication);
-            deferred.resolve(movieId);
+            deferred.resolve(authentication);
         });
 
     return deferred.promise;

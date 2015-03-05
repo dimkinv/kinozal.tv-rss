@@ -1,0 +1,94 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'node-formidable',
+1 verbose cli   '--save' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.33
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 verbose readDependencies using package.json deps
+6 verbose cache add [ 'node-formidable', null ]
+7 verbose cache add name=undefined spec="node-formidable" args=["node-formidable",null]
+8 verbose parsed url { protocol: null,
+8 verbose parsed url   slashes: null,
+8 verbose parsed url   auth: null,
+8 verbose parsed url   host: null,
+8 verbose parsed url   port: null,
+8 verbose parsed url   hostname: null,
+8 verbose parsed url   hash: null,
+8 verbose parsed url   search: null,
+8 verbose parsed url   query: null,
+8 verbose parsed url   pathname: 'node-formidable',
+8 verbose parsed url   path: 'node-formidable',
+8 verbose parsed url   href: 'node-formidable' }
+9 silly lockFile 2081aba7-node-formidable node-formidable
+10 verbose lock node-formidable C:\Users\dimkinv\AppData\Roaming\npm-cache\2081aba7-node-formidable.lock
+11 silly lockFile 2081aba7-node-formidable node-formidable
+12 silly lockFile 2081aba7-node-formidable node-formidable
+13 verbose addNamed [ 'node-formidable', '' ]
+14 verbose addNamed [ null, '*' ]
+15 silly lockFile 0e46e678-node-formidable node-formidable@
+16 verbose lock node-formidable@ C:\Users\dimkinv\AppData\Roaming\npm-cache\0e46e678-node-formidable.lock
+17 silly addNameRange { name: 'node-formidable', range: '*', hasData: false }
+18 verbose request where is /node-formidable
+19 verbose request registry https://registry.npmjs.org/
+20 verbose request id a9072a8d6a860bdf
+21 verbose url raw /node-formidable
+22 verbose url resolving [ 'https://registry.npmjs.org/', './node-formidable' ]
+23 verbose url resolved https://registry.npmjs.org/node-formidable
+24 verbose request where is https://registry.npmjs.org/node-formidable
+25 info trying registry request attempt 1 at 21:46:05
+26 http GET https://registry.npmjs.org/node-formidable
+27 http 404 https://registry.npmjs.org/node-formidable
+28 verbose headers { date: 'Thu, 05 Mar 2015 19:46:24 GMT',
+28 verbose headers   server: 'Apache',
+28 verbose headers   'content-type': 'application/json',
+28 verbose headers   'cache-control': 'max-age=0',
+28 verbose headers   'content-length': '29',
+28 verbose headers   'accept-ranges': 'bytes',
+28 verbose headers   via: '1.1 varnish',
+28 verbose headers   age: '0',
+28 verbose headers   'x-served-by': 'cache-fra1242-FRA',
+28 verbose headers   'x-cache': 'MISS',
+28 verbose headers   'x-cache-hits': '0',
+28 verbose headers   'x-timer': 'S1425584783.625383,VS0,VE689',
+28 verbose headers   'keep-alive': 'timeout=10, max=50',
+28 verbose headers   connection: 'Keep-Alive' }
+29 silly registry.get cb [ 404,
+29 silly registry.get   { date: 'Thu, 05 Mar 2015 19:46:24 GMT',
+29 silly registry.get     server: 'Apache',
+29 silly registry.get     'content-type': 'application/json',
+29 silly registry.get     'cache-control': 'max-age=0',
+29 silly registry.get     'content-length': '29',
+29 silly registry.get     'accept-ranges': 'bytes',
+29 silly registry.get     via: '1.1 varnish',
+29 silly registry.get     age: '0',
+29 silly registry.get     'x-served-by': 'cache-fra1242-FRA',
+29 silly registry.get     'x-cache': 'MISS',
+29 silly registry.get     'x-cache-hits': '0',
+29 silly registry.get     'x-timer': 'S1425584783.625383,VS0,VE689',
+29 silly registry.get     'keep-alive': 'timeout=10, max=50',
+29 silly registry.get     connection: 'Keep-Alive' } ]
+30 silly lockFile 0e46e678-node-formidable node-formidable@
+31 silly lockFile 0e46e678-node-formidable node-formidable@
+32 error Error: Package not found : node-formidable
+32 error     at RegClient.<anonymous> (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:308:14)
+32 error     at Request._callback (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:246:65)
+32 error     at Request.self.callback (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\request\request.js:236:22)
+32 error     at Request.emit (events.js:98:17)
+32 error     at Request.<anonymous> (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\request\request.js:1142:14)
+32 error     at Request.emit (events.js:117:20)
+32 error     at IncomingMessage.<anonymous> (C:\Program Files (x86)\nodejs\node_modules\npm\node_modules\request\request.js:1096:12)
+32 error     at IncomingMessage.emit (events.js:117:20)
+32 error     at _stream_readable.js:943:16
+32 error     at process._tickCallback (node.js:419:13)
+33 error If you need help, you may report this *entire* log,
+33 error including the npm and node versions, at:
+33 error     <http://github.com/npm/npm/issues>
+34 error System Windows_NT 6.2.9200
+35 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "node-formidable" "--save"
+36 error cwd C:\Users\dimkinv\Documents\GitHub\kinozal.tv-rss
+37 error node -v v0.10.33
+38 error npm -v 1.4.28
+39 verbose exit [ 1, true ]
