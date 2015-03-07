@@ -6,25 +6,16 @@ var xml = require('xml2js');
 var q = require('q');
 var _ = require('lodash');
 var NodeCache = require('node-cache');
+var rssBuilder = require('../rss-builder');
+var logger = require('winston');
 
 var router = express.Router();
 var cache = new NodeCache();
 var idRegex = /(?!\?id=)\d+/g;
 var torrentBaseUrl = 'http://kinozal.tv/download.php/{0}/[kinozal.tv]id{0}.torrent';
 
-/* GET users listing. */
-router.post('/test', function (req, res) {
-    console.log(req.headers);
-    console.log(req.body);
-    res.send('');
-});
-router.get('/test', function (req, res) {
-    console.log(req.headers);
-    console.log(req.body);
-    res.send('');
-});
-
 router.get('/link/:cridentials/:movieId/file.torrent', function (req, res) {
+    logger.info('got request for torrent file %s, with cridentials %s', req.params.movieId, req.params.cridentials);
     var parts = req.params.cridentials.split(':');
     var cridentials = {
         username: parts[0],
@@ -34,8 +25,9 @@ router.get('/link/:cridentials/:movieId/file.torrent', function (req, res) {
     var authenticationDetails = cache.get(req.params.cridentials);
     if (!_.isEmpty(authenticationDetails)) {
         retrieveTorrentFile(req.params.movieId, authenticationDetails[req.params.cridentials]).then(function (response) {
-            //send file
-            res.set('Content-Disposition', 'attachment; filename="' + req.params.movieId + '.torrent"').send(data);
+            logger.info('retrieved file %s', req.params.movieId);
+            res.set('Content-Disposition', 'attachment; filename="' + req.params.movieId + '.torrent"').send(response);
+            logger.info('sent file to client');
         });
         return;
     }
@@ -54,10 +46,11 @@ router.get('/:cridentials/rss.xml', function (req, res) {
             parseXML(err, response)
                 .then(buildLinks.bind(null, req.params.cridentials))
                 .then(function (links) {
-                    res.json(links);
+                    res.set('content-type', 'text/xml');
+                    res.send('<?xml version="1.0" encoding="utf-8"?>' + links.toString());
                 })
                 .catch(function (err) {
-                    res.status(500).end();
+                    res.status(500).end(err);
                 })
         })
 
@@ -75,7 +68,6 @@ function parseXML(err, res) {
     }
 
     xml.parseString(res.text, function (err, obj) {
-        console.log('parsed');
         if (err) {
             deferred.reject(err);
             return;
@@ -88,6 +80,7 @@ function parseXML(err, res) {
 }
 
 function buildLinks(cridentials, obj) {
+
     var links = _.map(obj.rss.channel[0].item, function (item) {
         var matches = item.link[0].match(idRegex);
         if (matches.length === 0) {
@@ -95,27 +88,27 @@ function buildLinks(cridentials, obj) {
         }
         return {
             title: item.title,
-            pageLink: 'http://localhost:3000/rss/link/' + cridentials + '/' + matches[0] + '/file.torrent'
+            torrent: 'http://localhost:3000/rss/link/' + cridentials + '/' + matches[0] + '/file.torrent',
+            pubDate: item.pubDate,
+            category: item.category
         }
     });
 
-    return links;
+    return rssBuilder.buildXMLFromLinks(links);
 }
 
 function retrieveTorrentFile(movieId, authentication) {
     var deferred = q.defer();
     var torrentUrl = torrentBaseUrl.replace(/\{0\}/g, movieId);
-    console.log(torrentUrl);
+
     request.get(torrentUrl)
         .parse(function (rq, callback) {
             var data = '';
             rq.setEncoding('ascii');
             rq.on('data', function (chunk) {
                 data += chunk;
-                console.log(chunk);
             });
             rq.on('end', function () {
-                console.log(data);
                 deferred.resolve(data);
             });
         })
