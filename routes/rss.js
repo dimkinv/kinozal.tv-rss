@@ -12,7 +12,7 @@ var logger = require('winston');
 var router = express.Router();
 var cache = new NodeCache();
 var idRegex = /(?!\?id=)\d+/g;
-var torrentBaseUrl = 'http://kinozal.tv/download.php/{0}/[kinozal.tv]id{0}.torrent';
+var torrentBaseUrl = 'http://kinozal.tv/download.php?id={0}';
 
 router.get('/link/:cridentials/:movieId/file.torrent', function (req, res) {
     logger.info('got request for torrent file %s, with cridentials %s', req.params.movieId, req.params.cridentials);
@@ -121,7 +121,7 @@ function retrieveTorrentFile(movieId, authentication) {
 
 function login(cridentials) {
     var deferred = q.defer();
-
+    cridentials.returnTo = '';
     request.post('http://kinozal.tv/takelogin.php')
         .send(cridentials)
         .type('form')
