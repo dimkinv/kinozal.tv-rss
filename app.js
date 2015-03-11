@@ -20,9 +20,12 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
-app.use('/', routes);
+app.get('/', function(req, res){
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 app.use('/rss', users);
 
 // catch 404 and forward to error handler

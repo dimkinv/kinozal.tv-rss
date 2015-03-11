@@ -28,6 +28,6 @@ exports.buildXMLFromLinks = function (links) {
 var baseXML = {
     rss: {
         '@xmlns:atom': 'http://www.w3.org/2005/Atom',
-        '@version': '2.0',
+        '@version': '2.0'
     }
 };
