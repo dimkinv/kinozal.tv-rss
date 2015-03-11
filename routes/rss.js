@@ -44,7 +44,7 @@ router.get('/:cridentials/rss.xml', function (req, res) {
     getRSS()
         .end(function (err, response) {
             parseXML(err, response)
-                .then(buildLinks.bind(null, req.params.cridentials))
+                .then(buildLinks.bind(null, req.params.cridentials, req.hostname))
                 .then(function (links) {
                     res.set('content-type', 'text/xml');
                     res.send('<?xml version="1.0" encoding="utf-8"?>' + links.toString());
@@ -79,7 +79,7 @@ function parseXML(err, res) {
     return deferred.promise;
 }
 
-function buildLinks(cridentials, obj) {
+function buildLinks(cridentials, host, obj ) {
 
     var links = _.map(obj.rss.channel[0].item, function (item) {
         var matches = item.link[0].match(idRegex);
@@ -88,7 +88,7 @@ function buildLinks(cridentials, obj) {
         }
         return {
             title: item.title,
-            torrent: 'http://localhost:3000/rss/link/' + cridentials + '/' + matches[0] + '/file.torrent',
+            torrent: 'http://' + host + '/rss/link/' + cridentials + '/' + matches[0] + '/file.torrent',
             pubDate: item.pubDate,
             category: item.category
         }

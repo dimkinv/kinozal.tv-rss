@@ -5,8 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/rss');
+var rss = require('./routes/rss');
 
 var app = express();
 
@@ -26,7 +25,7 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 app.get('/', function(req, res){
     res.sendFile(path.join(__dirname, 'index.html'));
 });
-app.use('/rss', users);
+app.use('/rss', rss);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -39,7 +38,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-//if (app.get('env') === 'development') {
+if (app.get('env') !== 'production') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
@@ -47,7 +46,7 @@ app.use(function(req, res, next) {
             error: err
         });
     });
-//}
+}
 //
 //// production error handler
 //// no stacktraces leaked to user
